@@ -20,23 +20,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.awt.ComposePanel
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitContent
-import foundry.intellij.compose.projectgen.FoundryDesktopTheme
 import java.awt.Dimension
+import java.nio.file.Path
 import javax.swing.JComponent
+import foundry.intellij.compose.projectgen.FoundryDesktopTheme
 
 object ChatPanel {
-  fun createPanel(): JComponent {
+  fun createPanel(scriptPath: Path): JComponent {
     return ComposePanel().apply {
       preferredSize = Dimension(400, 600)
-      setContent { FoundryDesktopTheme { ChatApp() } }
+      setContent { SlackDesktopTheme { ChatApp(scriptPath) } }
     }
   }
 
   @Composable
-  private fun ChatApp() {
+  private fun ChatApp(scriptPath: Path) {
+    println("ChatApp Script Path $scriptPath")
+    println("ChatApp Script Path absolutely ${scriptPath.toAbsolutePath()}")
     val circuit = remember {
       Circuit.Builder()
-        .addPresenter<ChatScreen, ChatScreen.State>(ChatPresenter())
+        .addPresenter<ChatScreen, ChatScreen.State>(ChatPresenter(scriptPath))
         .addUi<ChatScreen, ChatScreen.State> { state, modifier -> ChatWindowUi(state, modifier) }
         .build()
     }

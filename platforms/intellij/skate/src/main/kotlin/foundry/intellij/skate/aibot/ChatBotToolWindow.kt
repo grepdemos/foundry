@@ -15,21 +15,31 @@
  */
 package foundry.intellij.skate.aibot
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
-import foundry.intellij.compose.aibot.ChatPanel
+import com.slack.sgp.intellij.aibot.AIBotScriptFetcher
 import javax.swing.JComponent
+import foundry.intellij.compose.aibot.ChatPanel
+import foundry.intellij.skate.SkatePluginSettings
 
 class ChatBotToolWindow : ToolWindowFactory {
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
     val contentFactory = ContentFactory.getInstance()
-    val content = contentFactory.createContent(createComposePanel(), "", false)
+    val content = contentFactory.createContent(createComposePanel(project), "", false)
     toolWindow.contentManager.addContent(content)
   }
 
-  private fun createComposePanel(): JComponent {
-    return ChatPanel.createPanel()
+  private fun createComposePanel(project: Project): JComponent {
+    val settings = project.service<SkatePluginSettings>()
+    val aiBotScriptSetting = settings.devxpAPIcall
+    println("aiBotScriptSetting in ChatBotToolWindow $aiBotScriptSetting")
+    val scriptFetcher = AIBotScriptFetcher(project)
+    println("AIBotScriptFetcher $scriptFetcher")
+    val scriptPath = scriptFetcher.getAIBotScript()
+    println("Printing script path $scriptPath")
+    return ChatPanel.createPanel(scriptPath)
   }
 }

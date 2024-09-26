@@ -46,6 +46,12 @@ kotlin {
         implementation(libs.jewel.bridge)
         implementation(libs.kotlin.poet)
         implementation(libs.markdown)
+
+        implementation(libs.kaml)
+        implementation(libs.okhttp)
+        implementation(libs.okhttp.loggingInterceptor)
+        implementation(libs.retrofit)
+        implementation(libs.retrofit.converter.gson)
       }
     }
   }
